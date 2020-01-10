@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资源搜索</title>
+    <script src="{{ static_url('js/jquery-1.7.2.min.js') }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        function dosearch() {
+            var key = $("#key").val().trim();
+            var type = $("#type").val();
+            $.post("/ResSearch/",
+                    {
+                        key: key,
+                        type: type
+                    },
+                    function () {
+                        alert("date:" + data);
+                    }
+            );
+        }
+    </script>
+     <style type="text/css">
+        h2 {
+            font-family: "宋体"
+        }
+
+
+
+
+        #header {
+            margin-left: 1cm
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="header">
+<h2>资源搜索</h2>
+<form method="post" action="/ResSearch/" id="resSearch">
+    <p>资源搜索&nbsp;&nbsp;<input type="text" name="key" id="key">
+        <select name="type" id="type" form="resSearch">
+            <option value="ROT">全部资源</option>
+            <option value="DOC">文档资源</option>
+            <option value="COM">组件资源</option>
+            <option value="DAT">基础数据</option>
+            <option value="APP">应用系统</option>
+            <option value="USR">用户资源</option>
+            <option value="SRV">服务资源</option>
+            <option value="OTH">其他资源</option>
+        </select>
+       {# <input type="button" value="搜索" onclick="dosearch()">#}
+        <input type="submit" value="搜索">
+    </p>
+</form>
+</div>
+</body>
+</html>

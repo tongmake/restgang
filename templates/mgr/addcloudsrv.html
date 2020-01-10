@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="../clouds/reg?c=beijing&hash=h_EZaY6kHvcJuHsPFsLkFRYCYWU%3D" method="post">
+        name:<input type="text" name="servicename">
+        url:<input type="text" name="url">
+        origialurl:<input type="text" name="origialurl">
+        note:<input type="text" name="note">
+        access:<input type="text" name="access">
+        <input type="submit" value="add">
+    </form>
+    <form action="../clouds/delsrv?c=beijing&hash=h_EZaY6kHvcJuHsPFsLkFRYCYWU%3D" method="post">
+        origialurl:<input type="text" name="origialurl">
+
+        <input type="submit" value="del">
+    </form>
+
+    <form action="../ds" method="post">
+        sql:<input type="text" name="_sql">
+        pagesize:<input type="text" name="_pagesize">
+        pageindex:<input type="text" name="_pageindex">
+        <input type="submit" value="execute">
+    </form>
+
+</body>
+</html>

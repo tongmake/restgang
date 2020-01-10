@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资源搜索</title>
+    <script src="{{ static_url('js/jquery-1.7.2.min.js') }}" type="text/javascript"></script>
+    <style type="text/css">
+        h2 {
+            font-family: "宋体"
+        }
+
+        h4 {
+            color: #1770d4;
+            margin-top: -5px;
+        }
+
+        p {
+            margin-top: -15px;;
+            color: #333;
+        }
+
+        #header {
+            margin-left: 1cm
+        }
+
+        #main {
+            margin-left: 1cm;
+        }
+
+        #s_tab {
+            background: #f8f8f8;
+            line-height: 16px;
+            height: 20px;
+            padding: 5px 0 0 121px;
+            margin-bottom: 10px;
+            float: none;
+            zoom: 1;
+            border-top: 1px solid #dfdfdf;
+            border-bottom: 1px solid #eee;
+        }
+         #nums{
+             vertical-align: text-bottom;
+             height:20px;
+             line-height:20px;
+             margin-left:50px;
+             margin-bottom: 10px;
+             font-weight:200;
+             font-size:12px;
+             color:#999
+         }
+         #s_tab1{
+            background: #f8f8f8;
+            line-height: 16px;
+            height: 20px;
+            padding: 5px 0 0 20px;
+            float: none;
+            zoom: 1;
+            border-top: 1px solid #dfdfdf;
+            border-bottom: 1px solid #eee;
+        }
+        #side {
+            float: left;;
+            margin-top: 10px;
+            border: none;
+
+        }
+        #fenye{margin-top: 20px}
+        #context {
+            margin-left: 100px;
+            margin-bottom: 25px
+        }
+
+    </style>
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script>
+        $(document).ready(function(){
+
+	    var selectedType = "{{ p_type }}";
+	    var currentType = $(".selector").val();
+	    {#alert(selectedType);#}
+	    if (selectedType != null && selectedType != "" && selectedType != currentType) {
+		$("#type").val(selectedType);
+	    }
+	   {# alert($("#type option:selected").text());#}
+        });
+    </script>
+    <script type="text/javascript">
+
+        function dosearch() {
+            var key = $("#key").val().trim();
+            var type = $("#type").val();
+
+            $.post("/ResSearch/",
+                    {
+                        key: key,
+                        type: type
+
+                    },
+                    function () {
+                        alert("date:" + data);
+                    }
+            );
+        }
+    </script>
+
+</head>
+<body>
+<div id="header">
+    <h2>资源搜索</h2>
+    <form method="post" action="/ResSearch/" id="resSearch">
+        <p>资源搜索&nbsp;&nbsp;<input type="text" name="key" id="key">
+            <select name="type" id="type" form="resSearch">
+                <option value="ROT">全部资源</option>
+                <option value="DOC">文档资源</option>
+                <option value="COM">组件资源</option>
+                <option value="DAT">基础数据</option>
+                <option value="APP">应用系统</option>
+                <option value="USR">用户资源</option>
+                <option value="SRV">服务资源</option>
+                <option value="OTH">其他资源</option>
+            </select>
+            {# <input type="button" value="搜索" onclick="dosearch()">#}
+
+            <input type="submit" value="搜索">
+        </p>
+        <div id="s_tab">
+        </div>
+        <div id =nums>
+         您好，共为你查询到{{ p_nums }}条结果,共有{{p_last }}页
+        </div>
+        <div id="main">
+
+            {% for i in item %}
+
+            {% if i['RSTYPE']== "DAT" %}
+                <div id=side><img src="/static/js/jqueryui/images/11111.png" width="50" height="45"></div>
+                <div id=context>
+                    {% if i['IDTITLE'] == None %}
+                        <h4>目录编号：{{ i['MLBH'] }}</h4>
+                        <p> 目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动</p>
+                        <p>资源类型：基础数据 &nbsp;</p>
+                    {% else %}
+                        <h4>表中文名：{{ i['IDTITLE'] }}</h4>
+                        <p>目录编号：{{ i['MLBH'] }} &nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动</p>
+                        <p>资源类型：基础数据 &nbsp;表英文名：{{ i['IDENTID'] }} &nbsp;</p>
+                    {% end %}
+                </div>
+            {% elif i['RSTYPE'] == "SRV" %}
+
+                <div id=side><img src="/static/js/jqueryui/images/11111.png" width="50" height="45"></div>
+                <div id=context>
+
+                    {#{% if i['TYPE'] is None %}
+                       <h4>资源目录名：{{ i['MLMC'] }}</h4>
+                       <p>目录编号:{{ i['MLBH'] }}&nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动 &nbsp;资源类型：服务资源 </p>
+                    {% end %}#}
+                     {% if i['TYPE'] is not None  %}
+{#                        {{ i }}#}
+                        {% if i['TYPE'] == 1 %}
+                            <h4 >服务名：{{ i['SERVICENAME'] }}</h4>
+                            <p>服务描述：{{ i['NOTE'] }}</p>
+                            <p>服务ID：{{ i['SERVICEID'] }} &nbsp;类型：webService服务&nbsp;&nbsp;代理服务地址：<a href="http://10.1.3.171:8000/services/{{ i['URL'] }}">http://10.1.3.171:8000/services/{{ i['URL'] }}</a> &nbsp;
+                                    命名空间：{{ i['NAMESPACE'] }}
+                                {% if i['SECRET'] == 'N' %}
+                                    安全机制：禁用安全
+                                {% elif i['SECRET'] == 'P' %}
+                                    安全机制：令牌机制
+                                {% else %}
+                                    安全机制：密码机制
+                                {% end %}
+                                {% if i['ENABLED'] == 1 %}
+                                    状态：启用
+                                {% else %}
+                                    状态：停用
+                                {% end %}&nbsp;
+                            </p>
+                            <p>目录编号:{{ i['MLBH'] }}&nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;资源类型：服务资源 </p>
+                        {% end %}
+                        {% if i['TYPE'] == 2 or i['TYPE'] == 3 or i['TYPE'] == 4 %}
+                            <h4 >服务名：{{ i['SERVICENAME'] }}</h4>
+                            <p>服务描述：{{ i['NOTE'] }}</p>
+                            <p>服务ID：{{ i['SERVICEID'] }} &nbsp;类型：restful服务&nbsp;&nbsp;代理服务地址：<a href="http://10.1.3.171:8000/services/{{ i['URL'] }}">http://10.1.3.171:8000/services/{{ i['URL'] }}</a> &nbsp;
+                                {% if i['SECRET'] == 'N' %}
+                                    安全机制：禁用安全
+                                {% elif i['SECRET'] == 'P' %}
+                                    安全机制：令牌机制
+                                {% else %}
+                                    安全机制：密码机制
+                                {% end %}&nbsp;
+                                {% if i['ENABLED'] == 1 %}
+                                    状态：启用
+                                {% else %}
+                                    状态：停用
+                                {% end %}
+                                &nbsp;
+                            </p>
+                            <p>目录编号:{{ i['MLBH'] }}&nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;
+                                资源类型：服务资源 </p>
+                        {% end %}
+                        {% if i['TYPE'] == 5 %}
+                            <h4 >服务名：{{ i['SERVICENAME'] }}</h4>
+                            <p>服务描述：{{ i['NOTE'] }}</p>
+                            <p>服务ID：{{ i['SERVICEID'] }} &nbsp;类型：数据查询服务&nbsp;&nbsp;
+                                代理服务地址：<a href="http://10.1.3.171:8000/services/{{ i['URL'] }}">http://10.1.3.171:8000/services/{{ i['URL'] }}</a> &nbsp;
+                                {% if i['SECRET'] == 'N' %}
+                                    安全机制：禁用安全
+                                {% elif i['SECRET'] == 'P' %}
+                                    安全机制：令牌机制
+                                {% else %}
+                                    安全机制：密码机制
+                                {% end %}&nbsp;
+                                {% if i['ENABLED'] == 1 %}
+                                    状态：启用
+                                {% else %}
+                                    状态：停用
+                                {% end %}
+                                &nbsp;
+                            </p>
+                            <p>sql语句：{{ i['SQL'] }}</p>
+                            <p>目录编号:{{ i['MLBH'] }}&nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;
+                                资源类型：服务资源 </p>
+                        {% end %}
+                        {% if i['TYPE'] == 6 %}
+                            <h4 >服务名：{{ i['SERVICENAME'] }}</h4>
+                            <p>服务描述：{{ i['NOTE'] }}</p>
+                            <p>服务ID：{{ i['SERVICEID'] }} &nbsp;类型：数据封装服务&nbsp;&nbsp;
+                                代理服务地址：<a href="http://10.1.3.171:8000/services/{{ i['URL'] }}">http://10.1.3.171:8000/services/{{ i['URL'] }}</a>
+                                &nbsp;
+                                {% if i['SECRET'] == 'N' %}
+                                    安全机制：禁用安全
+                                {% elif i['SECRET'] == 'P' %}
+                                    安全机制：令牌机制
+                                {% else %}
+                                    安全机制：密码机制
+                                {% end %}&nbsp;
+                                {% if i['ENABLED'] == 1 %}
+                                    状态：启用
+                                {% else %}
+                                    状态：停用
+                                {% end %}
+                                &nbsp;
+                            </p>
+                            <p>目录编号:{{ i['MLBH'] }}&nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;
+                                {% if i['ENABLED'] == 1 %}
+                                    状态：启用
+                                {% else %}
+                                    状态：停用
+                                {% end %} &nbsp;资源类型：服务资源 </p>
+                        {% end %}
+                    {% end %}
+                    {#{% else %}
+                        <h4 >服务名：{{ i['SERVICENAME'] }}</h4>
+                        <p>服务ID：{{ i['SERVICEID'] }} &nbsp;类型：{{ i['TYPE'] }}&nbsp;&nbsp;代理服务地址：<a href="{{ i['URL'] }}">{{ i['URL'] }}</a> &nbsp;</p>
+                        <p>目录编号:{{ i['MLBH'] }}&nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动 &nbsp;资源类型：服务资源 </p>#}{#
+                    {% end %}#}
+
+                </div>
+            {% elif i['RSTYPE'] == "USR" %}
+                <div id=side><img src="/static/js/jqueryui/images/11111.png" width="50" height="45"></div>
+                    <div id=context>
+                {% if i['USER_GENDER'] =="M" %}
+                    <h4>用户名：{{ i['USER_NAME'] }} </h4>
+                    <p>目录编号:{{ i['MLBH'] }} &nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动 &nbsp;资源类型：用户资源 </p>
+                    <p>用户ID：{{ i['USER_ID'] }} &nbsp; 性别：男 &nbsp;所属机构名：{{ i['ORG_NAME'] }}</p>
+                {% else %}
+                    <h4>用户名：{{ i['USER_NAME'] }} </h4>
+                    <p>目录编号:{{ i['MLBH'] }} &nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动 &nbsp;资源类型：用户资源 </p>
+                    <p>用户ID：{{ i['USER_ID'] }} &nbsp; 性别：女 &nbsp;所属机构名：{{ i['ORG_NAME'] }}</p>
+            {% end %}
+                 </div>
+            {% elif i['RSTYPE'] == "APP" %}
+
+            <div id=side><img src="/static/js/jqueryui/images/11111.png" width="50" height="45"></div>
+            <div id=context>
+                <h4>应用系统名称：{{ i['APP_NAME'] }}</h4>
+                <p>目录名称：{{ i['MLMC'] }} &nbsp; 资源类型：应用系统 &nbsp;应用系统ID：{{ i['APPID'] }}</p>
+                <p>应用系统IP：{{ i['APP_IP'] }} &nbsp; 应用系统链接：<a href="{{ i['APP_URL'] }}">{{ i['APP_URL'] }}</a></p>
+            </div>
+            {% elif i['RSTYPE'] == "OTH" %}
+            <div id=side><img src="/static/js/jqueryui/images/11111.png" width="50" height="45"></div>
+            <div id=context>
+                <h4>名称：{{ i['ATTNAME'] }}</h4>
+                <p>目录编号:{{ i['MLBH'] }} &nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动 &nbsp;资源类型：其他资源 </p>
+                <p>属性名称：{{ i['ATTNAME'] }} &nbsp;属性类型：{{ i['ATTTYPE'] }} &nbsp;
+                    属性说明：{{ i['ATTMEMO'] }}&nbsp;属性内容：{{ i['ATTVALUE'] }} &nbsp;ID：{{ i['RESID'] }}</p>
+            </div>
+            {% elif i['RSTYPE'] == "COM" %}
+            <div id=side><img src="/static/js/jqueryui/images/11111.png" width="50" height="45"></div>
+            <div id=context>
+                {% if i['SUBASS_NAME'] == None %}
+                <h4>目录编号:{{ i['MLBH'] }}</h4>
+                <p>目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动 </p>
+                <p> 资源类型：组件资源  &nbsp; </p>
+                {% else %}
+                <h4>组件名称：{{ i['SUBASS_NAME'] }}</h4>
+                <p>目录编号:{{ i['MLBH'] }}&nbsp;目录名称：{{ i['MLMC'] }} &nbsp;父级目录编号：{{ i['FJMLBH'] }} &nbsp;状态：启动 &nbsp;资源类型：组件资源 </p>
+                <p> 组件路径：{{ i['SUBASS_PATH'] }} &nbsp; 组件大小 ：{{ i['SUBASS_SIZE'] }}&nbsp;组件类型：{{ i['SUBASS_TYPE'] }} </p>
+                {% end %}
+            </div>
+            {% else %}
+            <tr>
+                <td>{{ i }}</td>
+            </tr>
+            {% end %}
+            {% end %}
+        </div>
+        <div id="s_tab1">
+        </div>
+        <div id="fenye">
+
+            转到第：<input type="text" name="page_num" id="page_num" value="{{ p_num }}"  style="width:20px;height:20px;">页
+
+            <button type="submit" name="page_num" value="1">首页</button>
+
+            <button type="submit" name="page_num" value="{{ p_air }}">上一页</button>&nbsp;
+
+            &nbsp;<button type="submit" name="page_num" value="{{ p_next }}">下一页</button>
+
+            <button type="submit" name="page_num" value="{{ p_last }}">尾页</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
+

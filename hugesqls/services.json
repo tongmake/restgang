@@ -1,0 +1,44 @@
+[{
+    "datasource": "8a8b8e5d544c17e201544c201a130005",
+    "url": "findAverageResult_h",
+    "param": [
+        {"name": "proid", "default": null, "cagalog": "p", "type": "string", "desc": "findAverageResult's proid"}
+    ],
+    "msglog": "N",
+    "type": 5,
+    "sqlfile": "findAverageResult.sql",
+    "serviceName": "获取国家简表统计数据",
+    "secret": "N",
+    "cachetype": "N",
+    "enabled": 1,
+    "serviceid": 90001
+},{
+    "datasource": "8a8b8e5d544c17e201544c201a130005",
+    "url": "findDeathClas",
+    "param": [
+        {"name": "proid ", "default": null, "cagalog": "p", "type": "string", "desc": "findAverageResult's proid"}
+    ],
+    "msglog": "N",
+    "type": 5,
+    "sqlfile": "findDeathClas.sql",
+    "serviceName": "获取死亡分类统计数据",
+    "secret": "N",
+    "cachetype": "N",
+    "enabled": 1,
+    "serviceid": 90002}
+,{
+    "datasource": "8a8b8e5d544c17e201544c201a130005",
+    "url": "findDeathReason",
+    "param": [
+        {"name": "proid ", "default": null, "cagalog": "p", "type": "string", "desc": "findAverageResult's proid"}
+    ],
+    "msglog": "N",
+    "type": 5,
+    "sqlfile": "findDeathReason.sql",
+    "serviceName": "获取死亡原因统计数据",
+    "secret": "N",
+    "cachetype": "N",
+    "enabled": 1,
+    "serviceid": 90003}
+
+]
